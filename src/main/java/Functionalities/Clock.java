@@ -2,6 +2,8 @@ package Functionalities;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Clock {
     private LocalDateTime currentTime;
@@ -50,24 +52,37 @@ public class Clock {
             throw new IllegalArgumentException("Invalid seconds value: " + seconds);
         }
     }
-
-    public void updateTime() {
-        this.currentTime = this.currentTime.plusSeconds(1); // Increment by one second
-
-        // Handle overflow to minutes and hours:
-        if (this.currentTime.getSecond() == 0) {
-            if (this.currentTime.getMinute() == 59) {
-                this.currentTime = this.currentTime.withHour(this.currentTime.getHour() + 1).withMinute(0);
-            } else {
-                this.currentTime = this.currentTime.withMinute(this.currentTime.getMinute() + 1);
+    public void startAutomaticUpdates() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                updateTime();
             }
-        }
-
-        // Reset to 00:00:00 if it reaches 24:00:00:
-        if (this.currentTime.getHour() == 24) {
-            this.currentTime = this.currentTime.withHour(0);
-        }
+        }, 0, 1000); // Update every second (1000 milliseconds)
     }
+
+//    public void updateTime() {
+//        this.currentTime = this.currentTime.plusSeconds(1); // Increment by one second
+//
+//        // Handle overflow to minutes and hours:
+//        if (this.currentTime.getSecond() == 0) {
+//            if (this.currentTime.getMinute() == 59) {
+//                this.currentTime = this.currentTime.withHour(this.currentTime.getHour() + 1).withMinute(0);
+//            } else {
+//                this.currentTime = this.currentTime.withMinute(this.currentTime.getMinute() + 1);
+//            }
+//        }
+//
+//        // Reset to 00:00:00 if it reaches 24:00:00:
+//        if (this.currentTime.getHour() == 24) {
+//            this.currentTime = this.currentTime.withHour(0);
+//        }
+//    }
+public void updateTime() {
+    // Get the current system time
+    this.currentTime = LocalDateTime.now();
+}
 
     @Override
     public String toString() {
